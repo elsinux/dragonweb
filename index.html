@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+	<title>Área Clientes</title>
+	<link type="text/css" href="css/css/bootstrap.css" rel="stylesheet" />
+	<link type="text/css" href="css/estilo_area_clientes.css" rel="stylesheet" />
+	<script type="text/javascript" src="css/js/jquery-1.8.1.min.js"></script>
+	<script src="html5uploader.js"></script>
+</head>
+	<body onload="new uploader('drop', 'status', 'uploader.php', 'list');">
+		<div id="container">
+			<div id="login">
+				<div class="btn-group">
+					<button id="elige" data-toggle="dropdown" class="btn btn-success dropdown-toggle span3">Elige <span class="caret"></span></button>
+				    <ul class="dropdown-menu">
+				     	<li><a id="select_clientes" href="#">Clientes</a></li>
+				        <li class="divider"></li>
+				        <li><a id="select_reservada" href="#">Área reservada</a></li>
+				    </ul>
+				</div><br><br>
+				<input id="u" class="span3" type="text" ><br><br>
+				<input id="p" class="span3" type="text" ><br><br>
+				<a id="log_button" class="btn btn-primary">Login</a>
+			</div>
+			<div id="logout_container" class="span8 offset8"><a id="logout" class="btn btn-warning">Log out <i class="icon-user"></i></a></div>
+			<br>
+			<br>
+			<div id="logued_cliente">
+				<h1 id="head_clientes"></h1>
+				<div id="files_cliente">
+					<!-- Respuesta de ajax scan_data-->
+				</div>
+				<a id="upload_button_cliente" class="btn btn-info">Subir archivos <i class="icon-hdd icon-white"></i></a>
+			</div>
+			<div id="logued_reservada">
+				<h1>Reservada</h1>
+				<div id="files_reservada">
+					<!-- Respuesta de ajax scan_data-->
+				</div>
+				<a id="upload_button_reservada" class="btn btn-info">Subir archivos <i class="icon-hdd icon-white"></i></a>
+			</div>
+			
+			<div id="upload">
+				<div id="box">
+					<div id="status">Arrastra tu archivo a subir aquí...</div>
+					<div id="drop" class="badge badge-warning"></div>
+					<p></p>
+				</div>
+				<div id="list"></div>
+			</div>
+		</div>
+		<script>
+		var user_select;
+		
+		//Upload Button Reservada
+		$('#upload_button_reservada').click(function(){
+			$('#upload').show();
+		});
+		
+		$("#upload_button_cliente").click(function(){
+			$('#upload').show();
+		});
+		
+		//devuelve la tabla de archivos en el directorio 
+		function scan_data(){
+			var request = $.ajax({
+			url: "data_scan.php",
+			type: "POST",
+			data: {user_name: user_name,
+				   filesystem: filesystem_id},
+			dataType: "html"
+			}).done(function() {
+				$("#files_reservada").empty();
+				$("#files_cliente").empty();
+				$("#files_reservada").append(request.responseText);
+				$("#files_cliente").append(request.responseText);
+			});
+		}
+		
+		function borra_archivo(nombre){
+			archivo_nombre = "data/";
+			archivo_nombre += nombre;
+			//alert(archivo_nombre);
+			var request = $.ajax({
+			url: "borra_archivo.php",
+			type: "POST",
+			data: {name: archivo_nombre},
+			dataType: "html"
+			}).done(function() {
+				scan_data();
+			});
+		}
+		
+		function down_load(nombre){
+			archivo_nombre = "download.php?file=data/";
+			archivo_nombre += nombre;
+			window.open(archivo_nombre, 'download', 'status=0');
+		}
+		
+//logout
+		$("#logout").click(function(){
+			logued="false";
+			$("#logued_reservada").hide();
+			$("#logued_cliente").hide();
+			$("#logout_container").hide();
+			$("#upload").hide();
+			 $('#u').val('');
+			$('#p').val('');
+			$("#login").show();
+		});
+
+// CREDENCIALES
+		$("#select_clientes").click(function(){
+			user_select='clientes';
+		});
+		
+		$("#select_reservada").click(function(){
+			user_select='reservada';
+		});
+//Login		
+		function login(){
+			var user=$("#u").val();
+			var pass=$("#p").val();
+			var request = $.ajax({
+				url: "login.php",
+				type: "POST",
+				data: { u: user,
+						p: pass
+						},
+				dataType: "html"
+			}).done(function() {
+				$("#login").append(request.responseText);
+			});
+		}
+		
+		$("#log_button").click(function(){
+			login();
+			if( ($("#u").val() == '') && ($("#p").val() == '') && ( user_select == 'reservada') ){
+				scan_data();
+				$("#logout_container").show();
+				$("#logued_reservada").show();
+				$("#login").hide();
+			}
+		});
+		
+		</script>
+		<script src="css/js/bootstrap.min.js"></script>	
+	</body>
+</html>
+
+

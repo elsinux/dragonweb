@@ -1,0 +1,32 @@
+#container{
+	position:relative;
+	width:800px;
+	margin:auto;
+	top:50px;
+}
+
+#logued_cliente{
+	display:none;
+}
+
+#logued_reservada{
+	display:none;
+}
+
+#upload{
+	display:none;
+}
+#drop{
+	height:300px;
+}
+
+#log_button{
+	margin-left:-1px;
+}
+
+#logout_container{
+	display:none;
+}
+tr{
+	cursor: pointer;
+}
