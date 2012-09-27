@@ -18,7 +18,7 @@ function uploader(place, status, targetPHP, show) {
 	
 	// Upload image files
 	upload = function(file) {
-	
+	//alert(user_name +' '+ filesystem_id);
 		// Firefox 3.6, Chrome 6, WebKit
 		if(window.FileReader) { 
 				
@@ -26,7 +26,7 @@ function uploader(place, status, targetPHP, show) {
 			this.loadEnd = function() {
 				bin = reader.result;				
 				xhr = new XMLHttpRequest();
-				xhr.open('POST', targetPHP+'?up=true', true);
+				xhr.open('POST', targetPHP+"?up=true&owner_id="+owner_id+"", true);
 				var boundary = 'xxxxxxxxx';
 	 			var body = '--' + boundary + "\r\n";  
 				body += "Content-Disposition: form-data; name='upload'; filename='" + file.name + "'\r\n";  
@@ -39,7 +39,7 @@ function uploader(place, status, targetPHP, show) {
 					xhr.sendAsBinary(body); 
 				// Chrome 7 sends data but you must use the base64_decode on the PHP side
 				} else { 
-					xhr.open('POST', targetPHP+'?up=true&base64=true', true);
+					xhr.open('POST', targetPHP+"?up=true&owner_id="+owner_id+"", true);
 					xhr.setRequestHeader('UP-FILENAME', file.name);
 					xhr.setRequestHeader('UP-SIZE', file.size);
 					xhr.setRequestHeader('UP-TYPE', file.type);
@@ -52,7 +52,6 @@ function uploader(place, status, targetPHP, show) {
 				}
 				if (status) {
 					document.getElementById(status).innerHTML = 'Loaded : 100%<br/>Next file ...';
-					scan_data();
 				}
 			}
 				
@@ -129,7 +128,7 @@ function uploader(place, status, targetPHP, show) {
   		// Safari 5 does not support FileReader
 		} else {
 			xhr = new XMLHttpRequest();
-			xhr.open('POST', targetPHP+'?up=true', true);
+			xhr.open('POST', targetPHP+"?up=true&owner_id="+owner_id+"", true);
 			xhr.setRequestHeader('UP-FILENAME', file.name);
 			xhr.setRequestHeader('UP-SIZE', file.size);
 			xhr.setRequestHeader('UP-TYPE', file.type);

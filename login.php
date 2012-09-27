@@ -6,12 +6,12 @@ if (!$_POST['u']==''){
 	  {
 	  die('Could not connect: ' . mysql_error());
 	  }
-	mysql_select_db("dragonweb", $con);
+	mysql_select_db("db_dragonweb", $con);
 //set to UTF-8
 	mysql_query("SET NAMES UTF8");
 	mysql_query("SET CHARACTER SET utf8");
 //find the user	
-	$sql="SELECT * FROM drag_users WHERE name ='$_POST[u]' AND pass = '$_POST[p]'";
+	$sql="SELECT * FROM clientes_users WHERE name ='$_POST[u]' AND pass = '$_POST[p]'";
  	$result = mysql_query($sql);
 	while($row = mysql_fetch_array($result))
 	{ $id = $row['id'];
@@ -20,7 +20,7 @@ if (!$_POST['u']==''){
 	if ($id <> ''){
 		echo "
 				<script>
-					var filesystem_id = ".$id.";
+					var owner_id = ".$id.";
 					var user_name = '".$name."';
 					var logued = 'true';
 					//alert(user_name +' '+ logued);

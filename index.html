@@ -11,19 +11,19 @@
 	<body onload="new uploader('drop', 'status', 'uploader.php', 'list');">
 		<div id="container">
 			<div id="login">
-				<div class="btn-group">
-					<button id="elige" data-toggle="dropdown" class="btn btn-success dropdown-toggle span3">Elige <span class="caret"></span></button>
+				<!--<div class="btn-group">
+					 <button id="elige" data-toggle="dropdown" class="btn btn-success dropdown-toggle span3">Elige <span class="caret"></span></button>
 				    <ul class="dropdown-menu">
 				     	<li><a id="select_clientes" href="#">Clientes</a></li>
 				        <li class="divider"></li>
 				        <li><a id="select_reservada" href="#">Área reservada</a></li>
 				    </ul>
-				</div><br><br>
+				</div><br><br>-->
 				<input id="u" class="span3" type="text" ><br><br>
-				<input id="p" class="span3" type="text" ><br><br>
+				<input id="p" class="span3" type="password" ><br><br>
 				<a id="log_button" class="btn btn-primary">Login</a>
 			</div>
-			<div id="logout_container" class="span8 offset8"><a id="logout" class="btn btn-warning">Log out <i class="icon-user"></i></a></div>
+			<div id="logout_container" class="span7 offset7"><a id="refresh" class="btn btn-success">Actualizar <i class="icon-refresh"></i></a> <a id="logout" class="btn btn-warning">Log out <i class="icon-user"></i></a></div>
 			<br>
 			<br>
 			<div id="logued_cliente">
@@ -42,6 +42,12 @@
 			</div>
 			
 			<div id="upload">
+				<form action="upload.php" method="post" enctype="multipart/form-data" target="_blank">
+					<input type="file" name="file" id="file"/> 
+					<input id="owner" type="hidden" name="id_owner" /> 
+					<br />
+					<input id="sube" class="btn btn-primary" type="submit" name="submit" value="Enviar" />
+				</form>
 				<div id="box">
 					<div id="status">Arrastra tu archivo a subir aquí...</div>
 					<div id="drop" class="badge badge-warning"></div>
@@ -55,20 +61,30 @@
 		
 		//Upload Button Reservada
 		$('#upload_button_reservada').click(function(){
+			$('#upload_button_reservada').hide();
 			$('#upload').show();
 		});
 		
 		$("#upload_button_cliente").click(function(){
+			$('#upload_button_cliente').hide();
 			$('#upload').show();
 		});
 		
+		$("#sube").click(function(){
+			$("#owner").val(owner_id);
+			//alert($('#owner').val(owner_id));
+		});
+		
+		$("#refresh").click(function(){
+			scan_data();
+		});
 		//devuelve la tabla de archivos en el directorio 
 		function scan_data(){
 			var request = $.ajax({
 			url: "data_scan.php",
 			type: "POST",
 			data: {user_name: user_name,
-				   filesystem: filesystem_id},
+				   owner_id: owner_id},
 			dataType: "html"
 			}).done(function() {
 				$("#files_reservada").empty();
@@ -78,14 +94,17 @@
 			});
 		}
 		
-		function borra_archivo(nombre){
+		function borra_archivo(id_file,nombre){
+			alert('Seguro que desea borrar?: '+archivo_nombre);
 			archivo_nombre = "data/";
 			archivo_nombre += nombre;
+			id_archivo = id_file;
 			//alert(archivo_nombre);
 			var request = $.ajax({
 			url: "borra_archivo.php",
 			type: "POST",
-			data: {name: archivo_nombre},
+			data: {name: archivo_nombre,
+					id_file: id_archivo},
 			dataType: "html"
 			}).done(function() {
 				scan_data();
@@ -93,9 +112,10 @@
 		}
 		
 		function down_load(nombre){
-			archivo_nombre = "download.php?file=data/";
-			archivo_nombre += nombre;
-			window.open(archivo_nombre, 'download', 'status=0');
+			archivo_baja = 'download.php?file=data/';
+			archivo_baja += nombre;
+			//alert(archivo_baja);
+			window.open('\'archivo_baja\'', 'download', 'status=0');
 		}
 		
 //logout
@@ -131,17 +151,12 @@
 				dataType: "html"
 			}).done(function() {
 				$("#login").append(request.responseText);
+				$("#").show();
 			});
 		}
 		
 		$("#log_button").click(function(){
 			login();
-			if( ($("#u").val() == '') && ($("#p").val() == '') && ( user_select == 'reservada') ){
-				scan_data();
-				$("#logout_container").show();
-				$("#logued_reservada").show();
-				$("#login").hide();
-			}
 		});
 		
 		</script>
